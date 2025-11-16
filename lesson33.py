@@ -2,8 +2,13 @@ import curses
 
 def get_text_for_input(poster, positions):
     all_position_queen = ""
+    is_knight = ""
+    if poster[0:6] == "Кароль":
+        is_knight = "КР"
     for pos in positions:
-        if positions[pos] == poster[0]:
+        if positions[pos] == is_knight:
+            all_position_queen +=  pos
+        elif positions[pos] == poster[0]:
             all_position_queen +=  pos
 
     if all_position_queen == "":
@@ -57,7 +62,7 @@ def menu(stdscr):
     def set_options():
         global options
         options = [
-            "Кароль -- введите позицию",
+            f"Кароль -- {get_text_for_input('Кароль', all_position)}",
             f"Ферзь -- {get_text_for_input('Ферьз', all_position)}", 
             f"Ладья -- {get_text_for_input('Ладья', all_position)}",
             f"Слон -- {get_text_for_input("Слон", all_position)}",
@@ -111,17 +116,18 @@ def menu(stdscr):
                             print("Вы не можете добавить новую позицию по теоритически, у вас уже 16 установленных позиции!")
                             input("Нажмите энтер чтобы выйти и потом нажмите готова чтобы вычислить все возможные варианты ходов")
                             break
-                        elif is_correct_position[options[index][0]] == max_correct_position[options[index][0]]:
+                        elif is_correct_position[options[index][0]] == max_correct_position[options[index][0]] or (options[index][0:6] == "Кароль" and is_correct_position["КР"] == max_correct_position["КР"]):
                             print("Вы не можете добавить по теортически такую позиция")
                             input("Нажмите энтер чтобы выйти")
                             break
 
                         summa += 1
-                        is_correct_position[options[index][0]] += 1
-                        if options[index][0:5] == "Кароль":
+                        if options[index][0:6] == "Кароль":
                             all_position[position] = "КР"
+                            is_correct_position["КР"] += 1
                         else:    
                             all_position[position] = options[index][0]
+                            is_correct_position[options[index][0]] += 1
                         set_options()
                         break
                     else:
